@@ -1,0 +1,12 @@
+bundle:
+  name: healthcare_claims_util_project
+
+include:
+  - resources/*.yml
+
+targets:
+  dev:
+    mode: development
+    default: true
+    workspace:
+      host: https://dbc-f2f75ece-6865.cloud.databricks.com

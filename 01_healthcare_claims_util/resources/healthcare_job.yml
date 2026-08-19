@@ -1,0 +1,30 @@
+resources:
+  jobs:
+    healthcare_claims_util_etl_job:
+      name: healthcare_claims_util_etl_job
+      tasks:
+        - task_key: bronze_ingestion
+          notebook_task:
+            notebook_path: ../notebooks/02_healthcare_bronze_autoloader_ingestion.py
+        - task_key: silver_transformations
+          depends_on:
+            - task_key: bronze_ingestion
+          notebook_task:
+            notebook_path: ../notebooks/03_healthcare_silver_transformations.py
+        - task_key: silver_ml_features
+          depends_on:
+            - task_key: silver_transformations
+          notebook_task:
+            notebook_path: ../notebooks/04_healthcare_silver_ml_features.py
+        - task_key: gold_aggregations
+          depends_on:
+            - task_key: silver_transformations
+          notebook_task:
+            notebook_path: ../notebooks/05_healthcare_gold_aggregations.py
+      schedule:
+        quartz_cron_expression: "0 30 6 * * ?"
+        timezone_id: "America/Los_Angeles"
+        pause_status: UNPAUSED
+      email_notifications:
+        on_failure:
+          - "latasha16@hotmail.com"
