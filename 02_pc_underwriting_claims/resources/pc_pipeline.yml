@@ -1,0 +1,10 @@
+resources:
+  pipelines:
+    pc_medallion_pipeline:
+      name: pc_medallion_pipeline
+      catalog: main
+      schema: property_casualty_ins
+      serverless: true
+      libraries:
+        - notebook:
+            path: ../notebooks/02_pc_medallion_pipeline.py

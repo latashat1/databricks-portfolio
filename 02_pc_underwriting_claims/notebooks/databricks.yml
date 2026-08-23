@@ -1,0 +1,16 @@
+bundle:
+  name: pc_underwriting_claims_project
+
+include:
+  - resources/*.yml
+
+targets:
+  dev:
+    mode: development
+    default: true
+    workspace:
+      host: https://dbc-f2f75ece-6865.cloud.databricks.com
+  prod:
+    mode: production
+    workspace:
+      host: https://dbc-f2f75ece-6865.cloud.databricks.com
