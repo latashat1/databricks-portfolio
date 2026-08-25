@@ -13,7 +13,7 @@ pipeline, provider fraud-risk ML feature table, scheduled Job orchestration,
 Lakeflow Declarative Pipeline (alternate implementation), Lakeview dashboard,
 and a Genie natural-language query space.
 
-![Healthcare Dashboard](./01_healthcare_claims_util/dashboards/healthcare_dashboard.PNG)
+![Healthcare Dashboard](./01_healthcare_claims_util/dashboards/healthcare_dashboard.png)
 
 ### [02 - Property & Casualty Underwriting & Claims](./02_pc_underwriting_claims)
 Underwriting risk factor and loss experience analytics on real Wisconsin
@@ -21,4 +21,4 @@ government property insurance data: Lakeflow Declarative Pipeline as the
 primary implementation, AI-assisted dashboard authoring, DABs pipeline
 deployment, and a Genie space.
 
-![P&C Dashboard](./02_pc_underwriting_claims/dashboards/pc_dashboard.PNG)
+![P&C Dashboard](./02_pc_underwriting_claims/dashboards/pc_dashboard.png)
