@@ -1,0 +1,305 @@
+{
+  "datasets": [
+    {
+      "name": "5b9ac254",
+      "displayName": "loss_ratio_summary",
+      "queryLines": [
+        "SELECT\n",
+        "  *\n",
+        "FROM\n",
+        "  main.property_casualty_ins.gold_loss_ratio_summary\n",
+        "ORDER BY\n",
+        "  loss_ratio_pct DESC"
+      ]
+    },
+    {
+      "name": "d1aefe74",
+      "displayName": "loss_by_entity_year",
+      "queryLines": [
+        "SELECT * FROM main.property_casualty_ins.gold_loss_experience_by_entity_year"
+      ]
+    },
+    {
+      "name": "3a249162",
+      "displayName": "loss_by_risk_factor",
+      "queryLines": [
+        "SELECT\n",
+        "  *\n",
+        "FROM\n",
+        "  main.property_casualty_ins.gold_loss_experience_by_risk_factor\n",
+        "ORDER BY\n",
+        "  claim_frequency_rate DESC"
+      ]
+    }
+  ],
+  "pages": [
+    {
+      "name": "cdaf2a4f",
+      "displayName": "Underwriting & Claims Overview",
+      "layout": [
+        {
+          "widget": {
+            "name": "loss_ratio_bar",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "5b9ac254",
+                  "fields": [
+                    {
+                      "name": "entity_type",
+                      "expression": "`entity_type`"
+                    },
+                    {
+                      "name": "loss_ratio_pct",
+                      "expression": "`loss_ratio_pct`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "frame": {
+                "title": "Loss Ratio by Entity Type",
+                "showTitle": true
+              },
+              "annotations": [
+                {
+                  "type": "horizontal-line",
+                  "encodings": {
+                    "type": "constant",
+                    "y": {
+                      "dataValue": "100",
+                      "dataType": "DOUBLE"
+                    },
+                    "label": {
+                      "value": "Break-even"
+                    }
+                  }
+                }
+              ],
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "entity_type",
+                  "displayName": "Entity Type",
+                  "scale": {
+                    "type": "categorical",
+                    "sort": {
+                      "by": "y-reversed"
+                    }
+                  }
+                },
+                "y": {
+                  "fieldName": "loss_ratio_pct",
+                  "displayName": "Loss Ratio %",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                },
+                "color": {
+                  "fieldName": "entity_type",
+                  "displayName": "Entity Type",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 0,
+            "width": 6,
+            "height": 5
+          }
+        },
+        {
+          "widget": {
+            "name": "severity_trend_line",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "d1aefe74",
+                  "fields": [
+                    {
+                      "name": "entity_type",
+                      "expression": "`entity_type`"
+                    },
+                    {
+                      "name": "policy_year",
+                      "expression": "`policy_year`"
+                    },
+                    {
+                      "name": "total_claim_amount",
+                      "expression": "`total_claim_amount`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "frame": {
+                "title": "Claims Trend by Entity Type",
+                "showTitle": true
+              },
+              "widgetType": "line",
+              "encodings": {
+                "x": {
+                  "fieldName": "policy_year",
+                  "displayName": "Policy Year",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                },
+                "y": {
+                  "fieldName": "total_claim_amount",
+                  "displayName": "Total Claim Amount",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                },
+                "color": {
+                  "fieldName": "entity_type",
+                  "displayName": "Entity Type",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 6,
+            "y": 0,
+            "width": 6,
+            "height": 5
+          }
+        },
+        {
+          "widget": {
+            "name": "risk_factor_table",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "3a249162",
+                  "fields": [
+                    {
+                      "name": "is_low_fire_class",
+                      "expression": "`is_low_fire_class`"
+                    },
+                    {
+                      "name": "has_no_claim_credit",
+                      "expression": "`has_no_claim_credit`"
+                    },
+                    {
+                      "name": "alarm_credit_pct",
+                      "expression": "`alarm_credit_pct`"
+                    },
+                    {
+                      "name": "policy_year_count",
+                      "expression": "`policy_year_count`"
+                    },
+                    {
+                      "name": "avg_severity",
+                      "expression": "`avg_severity`"
+                    },
+                    {
+                      "name": "median_claim_severity",
+                      "expression": "`median_claim_severity`"
+                    },
+                    {
+                      "name": "claim_frequency_rate",
+                      "expression": "`claim_frequency_rate`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "frame": {
+                "title": "Risk Factor Analysis",
+                "showTitle": true
+              },
+              "widgetType": "table",
+              "encodings": {
+                "columns": [
+                  {
+                    "fieldName": "is_low_fire_class"
+                  },
+                  {
+                    "fieldName": "has_no_claim_credit"
+                  },
+                  {
+                    "fieldName": "alarm_credit_pct"
+                  },
+                  {
+                    "fieldName": "policy_year_count"
+                  },
+                  {
+                    "fieldName": "avg_severity",
+                    "format": {
+                      "type": "number-currency",
+                      "currencyCode": "USD",
+                      "abbreviation": "none",
+                      "decimalPlaces": {
+                        "type": "exact",
+                        "places": 2
+                      }
+                    }
+                  },
+                  {
+                    "fieldName": "median_claim_severity",
+                    "format": {
+                      "type": "number-currency",
+                      "currencyCode": "USD",
+                      "abbreviation": "none",
+                      "decimalPlaces": {
+                        "type": "exact",
+                        "places": 2
+                      }
+                    }
+                  },
+                  {
+                    "fieldName": "claim_frequency_rate"
+                  }
+                ]
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 5,
+            "width": 12,
+            "height": 6
+          }
+        }
+      ],
+      "pageType": "PAGE_TYPE_CANVAS",
+      "layoutVersion": "GRID_V1"
+    }
+  ],
+  "uiSettings": {
+    "theme": {
+      "widgetHeaderAlignment": "ALIGNMENT_UNSPECIFIED"
+    },
+    "applyModeEnabled": false
+  }
+}

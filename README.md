@@ -6,7 +6,19 @@ Databricks Asset Bundles (CI/CD), Workflows/Jobs orchestration, and Genie/Lakevi
 dashboards.
 
 ## Projects
-- [01_healthcare_claims_util](./01_healthcare_claims_util) - Healthcare claims &
-  utilization analytics: bronze/silver/gold pipeline, provider fraud-risk ML
-  feature table, scheduled Job, Lakeflow Declarative Pipeline (alternate
-  implementation), Lakeview dashboard, and Genie space.
+
+### [01 - Healthcare Claims & Utilization](./01_healthcare_claims_util)
+Medicare-style claims and utilization analytics: bronze/silver/gold medallion
+pipeline, provider fraud-risk ML feature table, scheduled Job orchestration,
+Lakeflow Declarative Pipeline (alternate implementation), Lakeview dashboard,
+and a Genie natural-language query space.
+
+![Healthcare Dashboard](./01_healthcare_claims_util/dashboards/healthcare_dashboard.PNG)
+
+### [02 - Property & Casualty Underwriting & Claims](./02_pc_underwriting_claims)
+Underwriting risk factor and loss experience analytics on real Wisconsin
+government property insurance data: Lakeflow Declarative Pipeline as the
+primary implementation, AI-assisted dashboard authoring, DABs pipeline
+deployment, and a Genie space.
+
+![P&C Dashboard](./02_pc_underwriting_claims/dashboards/pc_dashboard.PNG)

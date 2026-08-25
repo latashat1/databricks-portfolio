@@ -1,0 +1,467 @@
+{
+  "datasets": [
+    {
+      "name": "d04c40fe",
+      "displayName": "claims_cost_trends",
+      "queryLines": [
+        "SELECT * FROM main.healthcare_claims_util.gold_claims_cost_trends"
+      ]
+    },
+    {
+      "name": "0244ec4d",
+      "displayName": "chronic_disease_prevalence",
+      "queryLines": [
+        "SELECT\n",
+        "  *\n",
+        "FROM\n",
+        "  main.healthcare_claims_util.gold_chronic_disease_prevalence\n",
+        "ORDER BY\n",
+        "  pct_diabetes DESC\n",
+        "LIMIT 15"
+      ]
+    },
+    {
+      "name": "b478d789",
+      "displayName": "fraud_risk_summary",
+      "queryLines": [
+        "SELECT * FROM main.healthcare_claims_util.gold_fraud_risk_summary"
+      ]
+    },
+    {
+      "name": "464dc5c4",
+      "displayName": "provider_utilization_summary",
+      "queryLines": [
+        "SELECT\n",
+        "  *\n",
+        "FROM\n",
+        "  main.healthcare_claims_util.gold_provider_utilization_summary\n",
+        "ORDER BY\n",
+        "  CASE\n",
+        "    WHEN claim_type = 'Inpatient' THEN 1\n",
+        "    ELSE 2\n",
+        "  END"
+      ]
+    },
+    {
+      "name": "6534cf3b",
+      "displayName": "Chronic Disease Prevalence (Top 15 States)",
+      "queryLines": [
+        "WITH top_states AS (\n",
+        "  SELECT\n",
+        "    *\n",
+        "  FROM\n",
+        "    main.healthcare_claims_util.gold_chronic_disease_prevalence\n",
+        "  ORDER BY\n",
+        "    (pct_diabetes + pct_heart_failure + pct_kidney_disease + pct_cancer) DESC\n",
+        "  LIMIT 15\n",
+        ")\n",
+        "SELECT\n",
+        "  state_name,\n",
+        "  total_beneficiaries,\n",
+        "  condition,\n",
+        "  prevalence_pct\n",
+        "FROM\n",
+        "  top_states\n",
+        "    UNPIVOT (\n",
+        "      prevalence_pct FOR condition IN (\n",
+        "        pct_diabetes AS `Diabetes`,\n",
+        "        pct_heart_failure AS `Heart failure`,\n",
+        "        pct_kidney_disease AS `Kidney disease`,\n",
+        "        pct_cancer AS `Cancer`\n",
+        "      )\n",
+        "    )"
+      ]
+    }
+  ],
+  "pages": [
+    {
+      "name": "b9d2eb1c",
+      "displayName": "Healthcare Overview",
+      "layout": [
+        {
+          "widget": {
+            "name": "claims_trend_chart",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "d04c40fe",
+                  "fields": [
+                    {
+                      "name": "claim_type",
+                      "expression": "`claim_type`"
+                    },
+                    {
+                      "name": "monthly(claim_month)",
+                      "expression": "DATE_TRUNC(\"MONTH\", `claim_month`)"
+                    },
+                    {
+                      "name": "sum(total_reimbursed)",
+                      "expression": "SUM(`total_reimbursed`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "frame": {
+                "title": "Monthly Claims Cost Trend",
+                "showTitle": true
+              },
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "monthly(claim_month)",
+                  "displayName": "Month",
+                  "scale": {
+                    "type": "temporal"
+                  }
+                },
+                "y": {
+                  "fieldName": "sum(total_reimbursed)",
+                  "displayName": "Total Reimbursed",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                },
+                "color": {
+                  "fieldName": "claim_type",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                },
+                "label": {
+                  "show": false
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 0,
+            "width": 6,
+            "height": 7
+          }
+        },
+        {
+          "widget": {
+            "name": "fraud_distribution_donut",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "b478d789",
+                  "fields": [
+                    {
+                      "name": "sum(provider_count)",
+                      "expression": "SUM(`provider_count`)"
+                    },
+                    {
+                      "name": "fraud_label",
+                      "expression": "`fraud_label`"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "frame": {
+                "title": "Provider Fraud Distribution",
+                "showTitle": true,
+                "showDescription": false
+              },
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "sum(provider_count)",
+                  "format": {
+                    "type": "number-plain",
+                    "abbreviation": "compact",
+                    "decimalPlaces": {
+                      "type": "max",
+                      "places": 2
+                    }
+                  },
+                  "displayName": "Provider Count",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                },
+                "y": {
+                  "fieldName": "fraud_label",
+                  "displayName": "Fraud Label",
+                  "scale": {
+                    "type": "categorical",
+                    "sort": {
+                      "by": "x-reversed"
+                    }
+                  }
+                },
+                "label": {
+                  "show": true,
+                  "text": {
+                    "fieldName": "sum(provider_count)",
+                    "displayName": "Provider Count"
+                  }
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 7,
+            "width": 6,
+            "height": 4
+          }
+        },
+        {
+          "widget": {
+            "name": "utilization_by_claim_type",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "464dc5c4",
+                  "fields": [
+                    {
+                      "name": "claim_type",
+                      "expression": "`claim_type`"
+                    },
+                    {
+                      "name": "sum(total_claims)",
+                      "expression": "SUM(`total_claims`)"
+                    },
+                    {
+                      "name": "avg(avg_claim_amount)",
+                      "expression": "AVG(`avg_claim_amount`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "frame": {
+                "title": "Utilization Summary by Claim Type",
+                "showTitle": true
+              },
+              "widgetType": "table",
+              "encodings": {
+                "columns": [
+                  {
+                    "fieldName": "claim_type",
+                    "contentAlignment": "left",
+                    "displayName": "Claim Type"
+                  },
+                  {
+                    "fieldName": "sum(total_claims)",
+                    "format": {
+                      "type": "number-plain",
+                      "abbreviation": "none",
+                      "decimalPlaces": {
+                        "type": "exact",
+                        "places": 0
+                      }
+                    },
+                    "displayName": "Total Claims"
+                  },
+                  {
+                    "fieldName": "avg(avg_claim_amount)",
+                    "format": {
+                      "type": "number-currency",
+                      "currencyCode": "USD",
+                      "abbreviation": "none",
+                      "decimalPlaces": {
+                        "type": "max",
+                        "places": 0
+                      },
+                      "hideGroupSeparator": true
+                    },
+                    "displayName": "Avg. Amount"
+                  }
+                ]
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 6,
+            "y": 7,
+            "width": 6,
+            "height": 4
+          }
+        },
+        {
+          "widget": {
+            "name": "chronic",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "6534cf3b",
+                  "fields": [
+                    {
+                      "name": "prevalence_pct",
+                      "expression": "`prevalence_pct`"
+                    },
+                    {
+                      "name": "state_name",
+                      "expression": "`state_name`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "frame": {
+                "showTitle": true,
+                "title": "Chronic Disease Prevalence by State"
+              },
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "prevalence_pct",
+                  "displayName": "Prevalence %",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                },
+                "y": {
+                  "fieldName": "state_name",
+                  "displayName": "State",
+                  "scale": {
+                    "type": "categorical",
+                    "sort": {
+                      "by": "x-reversed"
+                    }
+                  }
+                },
+                "label": {
+                  "show": true
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 6,
+            "y": 1,
+            "width": 6,
+            "height": 6
+          }
+        },
+        {
+          "widget": {
+            "name": "fcbae393",
+            "queries": [
+              {
+                "name": "dashboards/01f19f281a271b92a4704db929060ed9/datasets/01f19f61621b1e0bbf0751accb0b5a1f_condition",
+                "query": {
+                  "datasetName": "6534cf3b",
+                  "fields": [
+                    {
+                      "name": "condition",
+                      "expression": "`condition`"
+                    },
+                    {
+                      "name": "condition_associativity",
+                      "expression": "COUNT_IF(`associative_filter_predicate_group`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "disallowAll": true,
+              "selection": {
+                "defaultSelection": {
+                  "values": {
+                    "dataType": "STRING",
+                    "values": [
+                      {
+                        "value": "Diabetes"
+                      }
+                    ]
+                  }
+                }
+              },
+              "frame": {
+                "showTitle": false
+              },
+              "widgetType": "filter-single-select",
+              "encodings": {
+                "fields": [
+                  {
+                    "fieldName": "condition",
+                    "queryName": "dashboards/01f19f281a271b92a4704db929060ed9/datasets/01f19f61621b1e0bbf0751accb0b5a1f_condition"
+                  }
+                ]
+              }
+            }
+          },
+          "position": {
+            "x": 6,
+            "y": 0,
+            "width": 6,
+            "height": 1
+          }
+        }
+      ],
+      "pageType": "PAGE_TYPE_CANVAS",
+      "layoutVersion": "GRID_V1"
+    }
+  ],
+  "uiSettings": {
+    "theme": {
+      "canvasBackgroundColor": {
+        "light": "#FAFAFB",
+        "dark": "#1F272D"
+      },
+      "widgetBackgroundColor": {
+        "light": "#FFFFFF",
+        "dark": "#11171C"
+      },
+      "fontColor": {
+        "light": "#11171C",
+        "dark": "#E8ECF0"
+      },
+      "selectionColor": {
+        "light": "#2272B4",
+        "dark": "#8ACAFF"
+      },
+      "visualizationColors": [
+        "#077A9D",
+        "#FFAB00",
+        "#00A972",
+        "#FF3621",
+        "#8BCAE7",
+        "#AB4057",
+        "#99DDB4",
+        "#FCA4A1",
+        "#919191",
+        "#BF7080"
+      ],
+      "widgetHeaderAlignment": "LEFT"
+    },
+    "applyModeEnabled": false
+  }
+}
