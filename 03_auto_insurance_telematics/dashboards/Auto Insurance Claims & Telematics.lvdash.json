@@ -1,0 +1,366 @@
+{
+  "datasets": [
+    {
+      "name": "669cfcd1",
+      "displayName": "claims_by_severity",
+      "queryLines": [
+        "SELECT * FROM main.auto_insurance_telematics.gold_claims_by_severity"
+      ],
+      "columns": [
+        {
+          "displayName": "fraud_pct_label",
+          "expression": "CONCAT(CAST(ROUND(`pct_fraud_reported`, 1) AS STRING), '%')"
+        }
+      ]
+    },
+    {
+      "name": "edf38390",
+      "displayName": "fraud_risk_by_state",
+      "queryLines": [
+        "SELECT * FROM main.auto_insurance_telematics.gold_fraud_risk_by_state"
+      ]
+    },
+    {
+      "name": "b2ccb2dc",
+      "displayName": "driving_event_summary",
+      "queryLines": [
+        "SELECT * FROM main.auto_insurance_telematics.gold_driving_event_summary"
+      ]
+    },
+    {
+      "name": "bcdba2ed",
+      "displayName": "claims_enriched_with_vehicle_reference",
+      "queryLines": [
+        "SELECT * FROM main.auto_insurance_telematics.gold_claims_enriched_with_vehicle_reference"
+      ]
+    }
+  ],
+  "pages": [
+    {
+      "name": "f310b817",
+      "displayName": "Claims & Telematics Overview",
+      "layout": [
+        {
+          "widget": {
+            "name": "claims_cost_fraud",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "669cfcd1",
+                  "fields": [
+                    {
+                      "name": "incident_severity",
+                      "expression": "`incident_severity`"
+                    },
+                    {
+                      "name": "avg(pct_fraud_reported)",
+                      "expression": "AVG(`pct_fraud_reported`)"
+                    },
+                    {
+                      "name": "sum(avg_claim_amount)",
+                      "expression": "SUM(`avg_claim_amount`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "showTitle": true,
+                "title": {
+                  "value": "Claims Cost and Fraud Rate by Severity",
+                  "fields": []
+                }
+              },
+              "version": 3,
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "incident_severity",
+                  "displayName": "Incident Severity",
+                  "scale": {
+                    "type": "categorical",
+                    "sort": {
+                      "by": "y-reversed"
+                    }
+                  }
+                },
+                "y": {
+                  "fieldName": "sum(avg_claim_amount)",
+                  "displayName": "Average Claim Amount ($)",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                },
+                "color": {
+                  "fieldName": "incident_severity",
+                  "displayName": "incident_severity",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                },
+                "label": {
+                  "show": true,
+                  "text": {
+                    "fieldName": "avg(pct_fraud_reported)",
+                    "format": {
+                      "type": "number-plain",
+                      "decimalPlaces": {
+                        "type": "exact",
+                        "places": 1
+                      },
+                      "abbreviation": "none"
+                    },
+                    "formatTemplate": "{{ @formatted }}%"
+                  }
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 0,
+            "width": 6,
+            "height": 8
+          }
+        },
+        {
+          "widget": {
+            "name": "fraud_by_state",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "edf38390",
+                  "fields": [
+                    {
+                      "name": "claim_count",
+                      "expression": "`claim_count`"
+                    },
+                    {
+                      "name": "policy_state",
+                      "expression": "`policy_state`"
+                    },
+                    {
+                      "name": "pct_fraud_reported",
+                      "expression": "`pct_fraud_reported`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "showTitle": true,
+                "title": {
+                  "value": "Fraud Risk by State",
+                  "fields": []
+                }
+              },
+              "version": 3,
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "policy_state",
+                  "displayName": "Policy State",
+                  "scale": {
+                    "type": "categorical",
+                    "sort": {
+                      "by": "y-reversed"
+                    }
+                  }
+                },
+                "y": {
+                  "fieldName": "pct_fraud_reported",
+                  "displayName": "Fraud Rate (%)",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                },
+                "label": {
+                  "show": true,
+                  "text": {
+                    "fieldName": "claim_count"
+                  }
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 6,
+            "y": 0,
+            "width": 6,
+            "height": 8
+          }
+        },
+        {
+          "widget": {
+            "name": "driving_events",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "b2ccb2dc",
+                  "fields": [
+                    {
+                      "name": "pct_of_total",
+                      "expression": "`pct_of_total`"
+                    },
+                    {
+                      "name": "event_type",
+                      "expression": "`event_type`"
+                    },
+                    {
+                      "name": "event_count",
+                      "expression": "`event_count`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "showTitle": true,
+                "title": {
+                  "value": "Fleet-wide Driving Event Distribution",
+                  "fields": []
+                }
+              },
+              "version": 3,
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "event_type",
+                  "displayName": "Driving Event Type",
+                  "scale": {
+                    "type": "categorical",
+                    "sort": {
+                      "by": "y-reversed"
+                    }
+                  }
+                },
+                "y": {
+                  "fieldName": "event_count",
+                  "displayName": "Event Count",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                },
+                "label": {
+                  "show": true,
+                  "text": {
+                    "fieldName": "pct_of_total",
+                    "format": {
+                      "type": "number-plain",
+                      "abbreviation": "none",
+                      "decimalPlaces": {
+                        "type": "exact",
+                        "places": 1
+                      }
+                    },
+                    "formatTemplate": "{{ @formatted }}%"
+                  }
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 8,
+            "width": 6,
+            "height": 8
+          }
+        },
+        {
+          "widget": {
+            "name": "claim_by_vehicle",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "bcdba2ed",
+                  "fields": [
+                    {
+                      "name": "vehicle_class",
+                      "expression": "`vehicle_class`"
+                    },
+                    {
+                      "name": "avg(total_claim_amount)",
+                      "expression": "AVG(`total_claim_amount`)"
+                    }
+                  ],
+                  "filters": [
+                    {
+                      "expression": "`vehicle_class` IS NOT NULL"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "showTitle": true,
+                "title": {
+                  "value": "Average Claim by Vehicle Class",
+                  "fields": []
+                }
+              },
+              "version": 3,
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "vehicle_class",
+                  "displayName": "Vehicle Class",
+                  "scale": {
+                    "type": "categorical",
+                    "sort": {
+                      "by": "y-reversed"
+                    }
+                  }
+                },
+                "y": {
+                  "fieldName": "avg(total_claim_amount)",
+                  "displayName": "Average Claim Amount ($)",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 6,
+            "y": 8,
+            "width": 6,
+            "height": 8
+          }
+        }
+      ],
+      "pageType": "PAGE_TYPE_CANVAS",
+      "layoutVersion": "GRID_V1"
+    }
+  ],
+  "uiSettings": {
+    "theme": {
+      "widgetHeaderAlignment": "ALIGNMENT_UNSPECIFIED"
+    },
+    "applyModeEnabled": false
+  }
+}
