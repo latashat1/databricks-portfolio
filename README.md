@@ -22,3 +22,14 @@ primary implementation, AI-assisted dashboard authoring, DABs pipeline
 deployment, and a Genie space.
 
 ![P&C Dashboard](./02_pc_underwriting_claims/dashboards/pc_dashboard.png)
+
+### [03 - Auto Insurance Claims & Telematics](./03_auto_insurance_telematics)
+Auto insurance claims and fraud analysis combined with real-time telematics
+driving-behavior data: live Kafka streaming (Confluent Cloud) via genuine
+Structured Streaming, batch claims ingestion via Autoloader, PostgreSQL
+Lakehouse Federation for live cross-platform vehicle reference data (Neon),
+and a DABs-deployed multi-source Job with parallel task execution.
+
+![Auto Insurance Dashboard](./03_auto_insurance_telematics/dashboards/auto_insurance_dashboard.png)
+
+![Live Kafka Topic](./03_auto_insurance_telematics/kafka_topic_live_messages.PNG)
