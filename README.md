@@ -33,3 +33,13 @@ and a DABs-deployed multi-source Job with parallel task execution.
 ![Auto Insurance Dashboard](./03_auto_insurance_telematics/dashboards/auto_insurance_dashboard.png)
 
 ![Live Kafka Topic](./03_auto_insurance_telematics/kafka_topic_live_messages.PNG)
+
+### [04 - Retail Analytics & Product Dimension History](./04_retail_analytics)
+Retail sales analytics on a proper star-schema dataset, centered on a genuine
+**SCD Type 2** dimension implementation: a three-step MERGE pattern handling
+all four real-world change scenarios (unchanged, changed, new, discontinued),
+with a quantified proof table showing the exact dollar impact of skipping
+point-in-time history. DABs-deployed with a backfill/recurring-job
+architecture split and directly-verified idempotency.
+
+![Retail Analytics Dashboard](./04_retail_analytics/dashboards/retail_analytics_dashboard.png)
