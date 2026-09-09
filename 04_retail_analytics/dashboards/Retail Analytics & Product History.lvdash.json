@@ -1,0 +1,385 @@
+{
+  "datasets": [
+    {
+      "name": "6030c530",
+      "displayName": "sales_by_category",
+      "queryLines": [
+        "SELECT * FROM main.retail_analytics.gold_sales_by_category"
+      ]
+    },
+    {
+      "name": "bf8683f7",
+      "displayName": "sales_by_store",
+      "queryLines": [
+        "SELECT * FROM main.retail_analytics.gold_sales_by_store"
+      ]
+    },
+    {
+      "name": "50927baa",
+      "displayName": "customer_summary",
+      "queryLines": [
+        "SELECT * FROM main.retail_analytics.gold_customer_summary"
+      ]
+    },
+    {
+      "name": "fb824e40",
+      "displayName": "price_history_impact",
+      "queryLines": [
+        "SELECT * FROM main.retail_analytics.gold_price_history_impact"
+      ]
+    },
+    {
+      "name": "price_history_impact",
+      "displayName": "Price History Impact",
+      "queryLines": [
+        "SELECT\n",
+        "  product_name,\n",
+        "  'Correct (Point-in-Time)' AS metric_type,\n",
+        "  correct_point_in_time_revenue AS revenue,\n",
+        "  FALSE AS is_no_data\n",
+        "FROM\n",
+        "  main.retail_analytics.gold_price_history_impact\n",
+        "UNION ALL\n",
+        "SELECT\n",
+        "  product_name,\n",
+        "  'Naive (Current Price)' AS metric_type,\n",
+        "  COALESCE(naive_current_price_revenue, 0) AS revenue,\n",
+        "  CASE\n",
+        "    WHEN naive_current_price_revenue IS NULL THEN TRUE\n",
+        "    ELSE FALSE\n",
+        "  END AS is_no_data\n",
+        "FROM\n",
+        "  main.retail_analytics.gold_price_history_impact"
+      ]
+    },
+    {
+      "name": "top_customers",
+      "displayName": "Top 20 Customers",
+      "queryLines": [
+        "SELECT\n",
+        "  customer_id,\n",
+        "  city,\n",
+        "  total_transactions,\n",
+        "  total_spent\n",
+        "FROM\n",
+        "  main.retail_analytics.gold_customer_summary\n",
+        "ORDER BY\n",
+        "  total_spent DESC\n",
+        "LIMIT 20"
+      ]
+    }
+  ],
+  "pages": [
+    {
+      "name": "86cad9bf",
+      "displayName": "Retail Overview",
+      "layout": [
+        {
+          "widget": {
+            "name": "sales_by_category_chart",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "6030c530",
+                  "fields": [
+                    {
+                      "name": "category",
+                      "expression": "`category`"
+                    },
+                    {
+                      "name": "sum(total_revenue)",
+                      "expression": "SUM(`total_revenue`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "showTitle": true,
+                "title": {
+                  "value": "Sales by Category",
+                  "fields": []
+                }
+              },
+              "version": 3,
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "sum(total_revenue)",
+                  "displayName": "Total Revenue ($)",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                },
+                "y": {
+                  "fieldName": "category",
+                  "displayName": "Category",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                },
+                "color": {
+                  "fieldName": "category",
+                  "displayName": "category",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 0,
+            "width": 6,
+            "height": 4
+          }
+        },
+        {
+          "widget": {
+            "name": "sales_by_store_chart",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "bf8683f7",
+                  "fields": [
+                    {
+                      "name": "region",
+                      "expression": "`region`"
+                    },
+                    {
+                      "name": "sum(total_revenue)",
+                      "expression": "SUM(`total_revenue`)"
+                    },
+                    {
+                      "name": "store_name",
+                      "expression": "`store_name`"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "showTitle": true,
+                "title": {
+                  "value": "Sales by Store",
+                  "fields": []
+                }
+              },
+              "version": 3,
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "sum(total_revenue)",
+                  "displayName": "Total Revenue ($)",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                },
+                "y": {
+                  "fieldName": "store_name",
+                  "displayName": "Store",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                },
+                "color": {
+                  "fieldName": "region",
+                  "displayName": "region",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 6,
+            "y": 0,
+            "width": 6,
+            "height": 4
+          }
+        },
+        {
+          "widget": {
+            "name": "price_history_comparison",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "price_history_impact",
+                  "fields": [
+                    {
+                      "name": "metric_type",
+                      "expression": "`metric_type`"
+                    },
+                    {
+                      "name": "sum(revenue)",
+                      "expression": "SUM(`revenue`)"
+                    },
+                    {
+                      "name": "product_name",
+                      "expression": "`product_name`"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "showTitle": true,
+                "showDescription": true,
+                "title": {
+                  "value": "Revenue Impact: Point-in-Time vs Naive Pricing",
+                  "fields": []
+                },
+                "description": {
+                  "value": "NULL naive values are shown as $0 (indicating no historical data available)",
+                  "fields": []
+                }
+              },
+              "version": 3,
+              "mark": {
+                "layout": "group"
+              },
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "sum(revenue)",
+                  "displayName": "Revenue ($)",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                },
+                "y": {
+                  "fieldName": "product_name",
+                  "displayName": "Product",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                },
+                "color": {
+                  "fieldName": "metric_type",
+                  "displayName": "metric_type",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 4,
+            "width": 12,
+            "height": 4
+          }
+        },
+        {
+          "widget": {
+            "name": "top_customers_table",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "top_customers",
+                  "fields": [
+                    {
+                      "name": "customer_id",
+                      "expression": "`customer_id`"
+                    },
+                    {
+                      "name": "city",
+                      "expression": "`city`"
+                    },
+                    {
+                      "name": "total_transactions",
+                      "expression": "`total_transactions`"
+                    },
+                    {
+                      "name": "total_spent",
+                      "expression": "`total_spent`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "showTitle": true,
+                "title": {
+                  "value": "Top 20 Customers by Total Spent",
+                  "fields": []
+                }
+              },
+              "version": 2,
+              "widgetType": "table",
+              "encodings": {
+                "columns": [
+                  {
+                    "fieldName": "customer_id"
+                  },
+                  {
+                    "fieldName": "city"
+                  },
+                  {
+                    "fieldName": "total_transactions",
+                    "contentAlignment": "right"
+                  },
+                  {
+                    "fieldName": "total_spent",
+                    "format": {
+                      "type": "number-currency",
+                      "abbreviation": "none",
+                      "currencyCode": "USD"
+                    }
+                  }
+                ]
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 8,
+            "width": 12,
+            "height": 6
+          }
+        }
+      ],
+      "pageType": "PAGE_TYPE_CANVAS",
+      "layoutVersion": "GRID_V1"
+    },
+    {
+      "name": "bd16dbae",
+      "displayName": "Global Filters",
+      "pageType": "PAGE_TYPE_GLOBAL_FILTERS",
+      "layoutVersion": "GRID_V1"
+    }
+  ],
+  "uiSettings": {
+    "theme": {
+      "widgetHeaderAlignment": "ALIGNMENT_UNSPECIFIED"
+    },
+    "applyModeEnabled": false
+  }
+}
