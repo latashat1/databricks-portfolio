@@ -1,0 +1,18 @@
+resources:
+  jobs:
+    sales_revenue_analytics_etl_job:
+      name: sales_revenue_analytics_etl_job
+      tasks:
+        - task_key: bronze_ingestion
+          notebook_task:
+            notebook_path: ../notebooks/01_sales_bronze_ingestion.py
+        - task_key: silver_transformations
+          depends_on:
+            - task_key: bronze_ingestion
+          notebook_task:
+            notebook_path: ../notebooks/02_sales_silver_transformations.py
+        - task_key: gold_aggregations
+          depends_on:
+            - task_key: silver_transformations
+          notebook_task:
+            notebook_path: ../notebooks/03_sales_gold_aggregates.py
