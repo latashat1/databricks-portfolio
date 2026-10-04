@@ -1,0 +1,569 @@
+{
+  "datasets": [
+    {
+      "name": "733dd1ff",
+      "displayName": "funnel",
+      "queryLines": [
+        "SELECT * FROM main.sales_revenue_analytics.gold_pipeline_funnel\r\n",
+        "ORDER BY stage_order"
+      ]
+    },
+    {
+      "name": "7c37a6d0",
+      "displayName": "win_rate_by_source",
+      "queryLines": [
+        "SELECT * FROM main.sales_revenue_analytics.gold_win_rate_by_lead_source\r\n",
+        "ORDER BY closed_count DESC"
+      ]
+    },
+    {
+      "name": "eb1b3c8e",
+      "displayName": "rep_performance",
+      "queryLines": [
+        "SELECT * FROM main.sales_revenue_analytics.gold_rep_performance\r\n",
+        "ORDER BY won_amount DESC"
+      ]
+    },
+    {
+      "name": "bbbfbdb0",
+      "displayName": "deal_velocity",
+      "queryLines": [
+        "SELECT * FROM main.sales_revenue_analytics.gold_deal_velocity"
+      ]
+    },
+    {
+      "name": "2cdd3351",
+      "displayName": "bookings_trend",
+      "queryLines": [
+        "SELECT * FROM main.sales_revenue_analytics.gold_bookings_trend\r\n",
+        "ORDER BY booking_month"
+      ]
+    }
+  ],
+  "pages": [
+    {
+      "name": "6267515a",
+      "displayName": "Sales & Revenue Overview",
+      "layout": [
+        {
+          "widget": {
+            "name": "funnel_opportunity_count",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "733dd1ff",
+                  "fields": [
+                    {
+                      "name": "stage",
+                      "expression": "`stage`"
+                    },
+                    {
+                      "name": "sum(opportunity_count)",
+                      "expression": "SUM(`opportunity_count`)"
+                    },
+                    {
+                      "name": "sum(stage_order)",
+                      "expression": "SUM(`stage_order`)"
+                    }
+                  ],
+                  "disaggregated": false,
+                  "orders": [
+                    {
+                      "direction": "ASC",
+                      "expression": "SUM(`stage_order`)"
+                    }
+                  ]
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "showTitle": true,
+                "title": {
+                  "value": "Opportunity Count by Pipeline Stage",
+                  "fields": []
+                }
+              },
+              "version": 3,
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "stage",
+                  "axis": {
+                    "title": "Pipeline Stage"
+                  },
+                  "scale": {
+                    "type": "categorical",
+                    "sort": {
+                      "by": "measure",
+                      "measure": {
+                        "fieldName": "sum(stage_order)"
+                      }
+                    }
+                  }
+                },
+                "y": {
+                  "fieldName": "sum(opportunity_count)",
+                  "axis": {
+                    "title": "Number of Opportunities"
+                  },
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 0,
+            "width": 6,
+            "height": 8
+          }
+        },
+        {
+          "widget": {
+            "name": "win_rate_by_source_bar",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "7c37a6d0",
+                  "fields": [
+                    {
+                      "name": "sum(closed_count)",
+                      "expression": "SUM(`closed_count`)"
+                    },
+                    {
+                      "name": "lead_source",
+                      "expression": "`lead_source`"
+                    },
+                    {
+                      "name": "sum(win_rate_pct)",
+                      "expression": "SUM(`win_rate_pct`)"
+                    }
+                  ],
+                  "disaggregated": false,
+                  "orders": [
+                    {
+                      "direction": "DESC",
+                      "expression": "SUM(`closed_count`)"
+                    }
+                  ]
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "showTitle": true,
+                "title": {
+                  "value": "Win Rate % by Lead Source",
+                  "fields": []
+                }
+              },
+              "version": 3,
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "lead_source",
+                  "axis": {
+                    "title": "Lead Source"
+                  },
+                  "scale": {
+                    "type": "categorical",
+                    "sort": {
+                      "by": "measure-reversed",
+                      "measure": {
+                        "fieldName": "sum(closed_count)"
+                      }
+                    }
+                  }
+                },
+                "y": {
+                  "fieldName": "sum(win_rate_pct)",
+                  "format": {
+                    "type": "number-plain",
+                    "abbreviation": "none"
+                  },
+                  "formatTemplate": "{{ @formatted }}%",
+                  "axis": {
+                    "title": "Win Rate (%)"
+                  },
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                },
+                "label": {
+                  "show": true,
+                  "text": {
+                    "fieldName": "sum(closed_count)",
+                    "format": {
+                      "type": "number-plain",
+                      "abbreviation": "none"
+                    },
+                    "formatTemplate": "{{ @formatted }} closed"
+                  }
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 6,
+            "y": 0,
+            "width": 6,
+            "height": 8
+          }
+        },
+        {
+          "widget": {
+            "name": "won_amount_by_rep",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "eb1b3c8e",
+                  "fields": [
+                    {
+                      "name": "sales_rep",
+                      "expression": "`sales_rep`"
+                    },
+                    {
+                      "name": "sum(won_amount)",
+                      "expression": "SUM(`won_amount`)"
+                    }
+                  ],
+                  "disaggregated": false,
+                  "orders": [
+                    {
+                      "direction": "DESC",
+                      "expression": "SUM(`won_amount`)"
+                    }
+                  ]
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "showTitle": true,
+                "title": {
+                  "value": "Total Won Revenue by Sales Rep",
+                  "fields": []
+                }
+              },
+              "version": 3,
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "sales_rep",
+                  "axis": {
+                    "title": "Sales Rep"
+                  },
+                  "scale": {
+                    "type": "categorical",
+                    "sort": {
+                      "by": "measure-reversed",
+                      "measure": {
+                        "fieldName": "sum(won_amount)"
+                      }
+                    }
+                  }
+                },
+                "y": {
+                  "fieldName": "sum(won_amount)",
+                  "format": {
+                    "type": "number-currency",
+                    "abbreviation": "compact",
+                    "currencyCode": "USD"
+                  },
+                  "axis": {
+                    "title": "Revenue Won ($)"
+                  },
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 8,
+            "width": 6,
+            "height": 8
+          }
+        },
+        {
+          "widget": {
+            "name": "avg_cycle_days_by_rep",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "bbbfbdb0",
+                  "fields": [
+                    {
+                      "name": "sum(won_count)",
+                      "expression": "SUM(`won_count`)"
+                    },
+                    {
+                      "name": "dimension_value",
+                      "expression": "`dimension_value`"
+                    },
+                    {
+                      "name": "sum(avg_cycle_days)",
+                      "expression": "SUM(`avg_cycle_days`)"
+                    }
+                  ],
+                  "filters": [
+                    {
+                      "expression": "`dimension` IN ('Sales Rep')"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "showTitle": true,
+                "title": {
+                  "value": "Avg Cycle Days by Sales Rep",
+                  "fields": []
+                }
+              },
+              "version": 3,
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "dimension_value",
+                  "axis": {
+                    "title": "Sales Rep"
+                  },
+                  "scale": {
+                    "type": "categorical",
+                    "sort": {
+                      "by": "natural-order"
+                    }
+                  }
+                },
+                "y": {
+                  "fieldName": "sum(avg_cycle_days)",
+                  "format": {
+                    "type": "number-plain",
+                    "abbreviation": "none"
+                  },
+                  "formatTemplate": "{{ @formatted }} days",
+                  "axis": {
+                    "title": "Average Sales Cycle (Days)"
+                  },
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                },
+                "label": {
+                  "show": true,
+                  "text": {
+                    "fieldName": "sum(won_count)",
+                    "format": {
+                      "type": "number-plain",
+                      "abbreviation": "none"
+                    },
+                    "formatTemplate": "{{ @formatted }} deals"
+                  }
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 6,
+            "y": 8,
+            "width": 6,
+            "height": 8
+          }
+        },
+        {
+          "widget": {
+            "name": "avg_cycle_days_by_lead_source",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "bbbfbdb0",
+                  "fields": [
+                    {
+                      "name": "sum(won_count)",
+                      "expression": "SUM(`won_count`)"
+                    },
+                    {
+                      "name": "dimension_value",
+                      "expression": "`dimension_value`"
+                    },
+                    {
+                      "name": "sum(avg_cycle_days)",
+                      "expression": "SUM(`avg_cycle_days`)"
+                    }
+                  ],
+                  "filters": [
+                    {
+                      "expression": "`dimension` IN ('Lead Source')"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "showTitle": true,
+                "title": {
+                  "value": "Avg Cycle Days by Lead Source",
+                  "fields": []
+                }
+              },
+              "version": 3,
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "dimension_value",
+                  "axis": {
+                    "title": "Lead Source"
+                  },
+                  "scale": {
+                    "type": "categorical",
+                    "sort": {
+                      "by": "natural-order"
+                    }
+                  }
+                },
+                "y": {
+                  "fieldName": "sum(avg_cycle_days)",
+                  "format": {
+                    "type": "number-plain",
+                    "abbreviation": "none"
+                  },
+                  "formatTemplate": "{{ @formatted }} days",
+                  "axis": {
+                    "title": "Average Sales Cycle (Days)"
+                  },
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                },
+                "label": {
+                  "show": true,
+                  "text": {
+                    "fieldName": "sum(won_count)",
+                    "format": {
+                      "type": "number-plain",
+                      "abbreviation": "none"
+                    },
+                    "formatTemplate": "{{ @formatted }} deals"
+                  }
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 16,
+            "width": 6,
+            "height": 8
+          }
+        },
+        {
+          "widget": {
+            "name": "bookings_trend_line",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "2cdd3351",
+                  "fields": [
+                    {
+                      "name": "booking_month",
+                      "expression": "`booking_month`"
+                    },
+                    {
+                      "name": "sum(bookings_amount)",
+                      "expression": "SUM(`bookings_amount`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "showTitle": true,
+                "title": {
+                  "value": "Monthly Bookings Trend",
+                  "fields": []
+                }
+              },
+              "version": 3,
+              "widgetType": "line",
+              "encodings": {
+                "x": {
+                  "fieldName": "booking_month",
+                  "axis": {
+                    "title": "Month"
+                  },
+                  "scale": {
+                    "type": "temporal"
+                  }
+                },
+                "y": {
+                  "fieldName": "sum(bookings_amount)",
+                  "format": {
+                    "type": "number-currency",
+                    "abbreviation": "compact",
+                    "currencyCode": "USD"
+                  },
+                  "axis": {
+                    "title": "Bookings Revenue ($)"
+                  },
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 6,
+            "y": 16,
+            "width": 6,
+            "height": 8
+          }
+        }
+      ],
+      "pageType": "PAGE_TYPE_CANVAS",
+      "layoutVersion": "GRID_V1"
+    }
+  ],
+  "uiSettings": {
+    "theme": {
+      "widgetHeaderAlignment": "ALIGNMENT_UNSPECIFIED"
+    },
+    "applyModeEnabled": false
+  }
+}
