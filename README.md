@@ -43,3 +43,10 @@ point-in-time history. DABs-deployed with a backfill/recurring-job
 architecture split and directly-verified idempotency.
 
 ![Retail Analytics Dashboard](./04_retail_analytics/dashboards/retail_analytics_dashboard.png)
+
+### [05 - Sales & Revenue Analytics](https://github.com/latashat1/databricks-portfolio/blob/main/05_sales_revenue_analytics)
+
+Sales/revenue operations analytics on a live Salesforce CRM org, the first project in this portfolio to demonstrate **true cross-platform orchestration via Apache Airflow** — a general-purpose orchestrator (running locally via Docker) coordinating OAuth-based REST API extraction from Salesforce, incremental extraction via a source-side high-water mark with soft-delete tracking, and Databricks Files API landing, contrasted directly against Databricks' own native Workflows/DABs, which only orchestrate within Databricks itself. DABs-deployed medallion pipeline (bronze/silver/gold), triggered end-to-end from the same Airflow DAG via `DatabricksRunNowOperator`, a Lakeview dashboard, and a Genie space.
+
+[![Sales & Revenue Analytics Dashboard](https://github.com/latashat1/databricks-portfolio/raw/main/05_sales_revenue_analytics/dashboards/sales_revenue_analytics_dashboard_1800w.png)](/latashat1/databricks-portfolio/raw/main/05_sales_revenue_analytics/dashboards/sales_revenue_analytics_dashboard_full.png)
+
