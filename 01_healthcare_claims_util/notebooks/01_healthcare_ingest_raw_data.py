@@ -79,7 +79,7 @@ df.limit(5).show()
 # MAGIC
 # MAGIC | File | Rows | Status |
 # MAGIC |---|---|---|
-# MAGIC | Train_Beneficiarydata | 138,556 | ✅ verified |
-# MAGIC | Train_Inpatientdata | 40,474 | ✅ verified |
-# MAGIC | Train_Outpatientdata | 517,737 | ✅ verified |
-# MAGIC | Train (fraud labels) | 5,410 | ✅ verified |
+# MAGIC | Train_Beneficiarydata | 138,556 | verified |
+# MAGIC | Train_Inpatientdata | 40,474 | verified |
+# MAGIC | Train_Outpatientdata | 517,737 | verified |
+# MAGIC | Train (fraud labels) | 5,410 | verified |
